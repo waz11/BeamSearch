@@ -1,0 +1,4 @@
+/venv/
+/Ranker/sematch/
+/BeamSearch/model/cc.en.300.bin
+/BeamSearch/model/vectors.db
