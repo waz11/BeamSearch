@@ -20,8 +20,6 @@ def top(k, weights_map: dict) -> list:
         k-=1
     return res
 
-
-
 def top_groups(k, beam: list) -> list:
     heap = Heap(key=lambda x: -x) # MIN HEAP
     for group in beam:
@@ -44,7 +42,7 @@ class BeamSearch():
         delta = self.model.euclid(c_key, v_key)
         return delta
 
-    def generate_subgraph(self, k, candidates_by_token, weights) ->set:
+    def generate_subgraph(self, k :int, candidates_by_token :dict, weights :dict) ->set:
         beam = []
         for c in top(k, weights):
             beam.append(Group(c))
@@ -63,7 +61,7 @@ class BeamSearch():
             beam = top_groups(k, new_beam)
         return top_groups(1, beam)[0].vertices
 
-    def search(self, query:Query, k=2):
+    def search(self, query:Query, k :int=2) ->Graph:
         candidates_by_token, weights = self.__get_candidates(query)
         vertices_keys = self.generate_subgraph(k, candidates_by_token, weights)
         graph :Graph = self.extend_vertex_set_to_connected_subgraph(vertices_keys)
@@ -83,7 +81,7 @@ class BeamSearch():
                         weights[vertex.key] = weight
         return candidates_by_token, weights
 
-    def dist(self, vertex1, vertex2):
+    def dist(self, vertex1, vertex2) ->float:
         return self.model.euclid(vertex1, vertex2)
 
     def extend_vertex_set_to_connected_subgraph(self, vertices_keys) ->Graph:
@@ -127,7 +125,7 @@ class BeamSearch():
                 v = goal_key
         return v, path
 
-    def build_sub_graph(self, vertices, edges) -> Graph:
+    def build_sub_graph(self, vertices :set, edges :set) -> Graph:
         g = Graph()
         for v_key in vertices:
             g.add_vertex(self.graph.get_vertex(v_key))
