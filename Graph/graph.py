@@ -1,19 +1,16 @@
-import json
-import os
 import string
 from Graph.edge import Edge
-from Graph.utils.json_functions import get_data_from_json_file
 from Graph.vertex import Vertex
 import networkx as nx
 from matplotlib import pyplot as plt
 
 
 class Graph:
-
-    def __init__(self):
+    def __init__(self, directed=False):
         self.vertices :dict = {}    # key:vertex
         self.edges_dict :dict = {}  # key,key:edge
         self.edges :list = []
+        self.directed :bool = directed
 ##################################################################################3
     def num_of_vertices(self):
         return len(self.vertices)
@@ -23,19 +20,26 @@ class Graph:
     def add_vertex(self, vertex: Vertex) -> None:
         self.vertices[vertex.key] = vertex
         self.edges_dict[vertex.key] = []
+
     def add_edge(self, edge: Edge):
         self.edges_dict[edge.source].append(edge)
+        if not self.directed:
+            edge2 = Edge(edge.to, edge.source, edge.type)
+            self.edges_dict[edge2.source].append(edge2)
         self.edges.append(edge)
 ##################################################################################3
     def get_vertices(self) ->list:
         return list(self.vertices.values())
+
     def get_edges(self) ->list:
         return list(self.edges)
-    def get_vertex(self, key :int):
+
+    def get_vertex(self, key :int) ->Vertex:
         return self.vertices[key]
-    def get_edge(self,source_key :int, dest_key :int):
+
+    def get_edge(self,source_key :int, dest_key :int) ->Edge:
         return self.edges_dict[source_key, dest_key]
-##################################################################################3
+##################################################################################
     def draw(self) ->None:
         G = nx.DiGraph()
         edges = []
@@ -45,9 +49,8 @@ class Graph:
                 v1 :string = self.get_vertex(edge.source).name
                 v2 :string = self.get_vertex(edge.to).name
                 edges.append((v1,v2))
-                edge_labels[v1,v2] = edge.type
+                edge_labels[v1,v2] = edge.type.value
         G.add_edges_from(edges)
-
         pos = nx.spring_layout(G, k=500)
         nx.draw_networkx_nodes(G, pos, cmap=plt.get_cmap('jet'),node_size=2000,node_color='#00b4d9')
         nx.draw_networkx_labels(G, pos, font_size=10, font_color='k')
@@ -57,6 +60,7 @@ class Graph:
 ##################################################################################3
     def __len__(self):
         return len(self.vertices)
+
     def __str__(self):
         s = ''
         for vertex in self.get_vertices():

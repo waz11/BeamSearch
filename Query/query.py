@@ -1,6 +1,9 @@
 import string
 
+from Graph.edge import EdgeTypeEnum
 from Graph.graph import Graph
+from Graph.graphFromQuery import GraphFromQuery
+from Graph.vertex import VertexTypeEnum
 from Parser.tokenizer import Tokenizer
 
 
@@ -11,7 +14,7 @@ class Query:
     def __init__(self, query:string):
         self.content = query
         self.tokens = self.get_tokens()
-        # self.graph = self.build_graph()
+        self.graph = self.build_graph()
 
     def __str__(self):
         return str(self.content)
@@ -24,7 +27,7 @@ class Query:
 
     # for GreedySearch:
     def build_graph(self)->Graph:
-        g = Graph()
+        g = GraphFromQuery()
         content = self.content.split(',')
         for sentence in content:
             words = list(sentence.split(' '))
@@ -37,11 +40,11 @@ class Query:
                     elif word=='extends':
                         vertex1 = g.add_class(words[i - 1])
                         vertex2 = g.add_class(words[i + 2])
-                        g.add_edge1("extends", vertex1, vertex2)
+                        g.add_edge(EdgeTypeEnum.EXTENDS, vertex1.key, vertex2.key)
                     elif word=='implements':
                         vertex1 = g.add_class(words[i - 1])
                         vertex2 = g.add_interface(words[i + 1])
-                        g.add_edge1("implements", vertex1, vertex2)
+                        g.add_edge(EdgeTypeEnum.IMPLEMENTS, vertex1.key, vertex2.key)
                     elif word == 'interface':
                         g.add_interface(words[i + 1])
                     elif word=='contains':
@@ -51,16 +54,16 @@ class Query:
                             vertex1 = g.add_class(words[i - 1])
                         if words[i+1]== 'method':
                             vertex2 = g.add_method(words[i + 2])
-                            g.add_edge1("method", vertex1, vertex2)
+                            g.add_edge(EdgeTypeEnum.METHOD, vertex1.key, vertex2.key)
                         elif words[i+1]== 'class':
                             vertex2 = g.add_class(words[i + 2])
-                            g.add_edge1("contains", vertex1, vertex2)
+                            g.add_edge(EdgeTypeEnum.CONTAINS, vertex1.key, vertex2.key)
         return g
 
 
-
 if __name__ == '__main__':
-    query = Query("class list implements class iterable,class list contains class node")
+    query = Query("class list implements iterable,class list contains class node")
     print(query.tokens)
-    # g=query.graph
-    # g.draw()
+    g=query.graph
+    print(g)
+    g.draw()
