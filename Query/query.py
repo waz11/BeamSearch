@@ -34,36 +34,38 @@ class Query:
             for i, word in enumerate(words):
                 if word in special_words:
                     if word=='class':
-                        g.add_class(words[i + 1])
+                        name = words[i + 1]
+                        v = g.add_vertex(name, VertexTypeEnum.CLASS)
+
                     elif word =='method':
-                        g.add_method(words[i + 1])
+                        g.add_vertex(words[i + 1], VertexTypeEnum.METHOD)
+
                     elif word=='extends':
-                        vertex1 = g.add_class(words[i - 1])
-                        vertex2 = g.add_class(words[i + 2])
+                        vertex1 = g.add_vertex(words[i - 1], VertexTypeEnum.CLASS)
+                        vertex2 = g.add_vertex(words[i + 2], VertexTypeEnum.CLASS)
                         g.add_edge(EdgeTypeEnum.EXTENDS, vertex1.key, vertex2.key)
+
                     elif word=='implements':
-                        vertex1 = g.add_class(words[i - 1])
-                        vertex2 = g.add_interface(words[i + 1])
+                        vertex1 = g.add_vertex(words[i - 1], VertexTypeEnum.CLASS)
+                        vertex2 = g.add_vertex(words[i + 1], VertexTypeEnum.INTERFACE)
                         g.add_edge(EdgeTypeEnum.IMPLEMENTS, vertex1.key, vertex2.key)
+
                     elif word == 'interface':
-                        g.add_interface(words[i + 1])
+                        name = words[i + 1]
+                        g.add_vertex(name, VertexTypeEnum.INTERFACE)
+
                     elif word=='contains':
                         if words[i-2] == 'class':
-                            vertex1 = g.add_class(words[i - 1])
+                            vertex1 = g.add_vertex(words[i - 1], VertexTypeEnum.CLASS)
                         else:
-                            vertex1 = g.add_class(words[i - 1])
+                            vertex1 = g.add_vertex(words[i - 1], VertexTypeEnum.CLASS)
+
                         if words[i+1]== 'method':
-                            vertex2 = g.add_method(words[i + 2])
+                            vertex2 = g.add_vertex(words[i + 2], VertexTypeEnum.METHOD)
                             g.add_edge(EdgeTypeEnum.METHOD, vertex1.key, vertex2.key)
+
                         elif words[i+1]== 'class':
-                            vertex2 = g.add_class(words[i + 2])
+                            vertex2 = g.add_vertex(words[i + 2], VertexTypeEnum.CLASS)
                             g.add_edge(EdgeTypeEnum.CONTAINS, vertex1.key, vertex2.key)
         return g
 
-
-if __name__ == '__main__':
-    query = Query("class list implements iterable,class list contains class node")
-    print(query.tokens)
-    g=query.graph
-    print(g)
-    g.draw()

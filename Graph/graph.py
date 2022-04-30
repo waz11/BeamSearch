@@ -21,12 +21,17 @@ class Graph:
         self.vertices[vertex.key] = vertex
         self.edges_dict[vertex.key] = []
 
-    def add_edge(self, edge: Edge):
+    def add_edge(self, edge :Edge):
+        self.add_edge_aux(edge)
+
+    def add_edge_aux(self, edge: Edge, directed :bool = False):
+        if(edge.source not in self.edges_dict):
+            self.edges_dict[edge.source] = []
         self.edges_dict[edge.source].append(edge)
-        if not self.directed:
-            edge2 = Edge(edge.to, edge.source, edge.type)
-            self.edges_dict[edge2.source].append(edge2)
         self.edges.append(edge)
+        if not directed:
+            edge2 = Edge(edge.to, edge.source, edge.type)
+            self.add_edge_aux(edge2, True)
 ##################################################################################3
     def get_vertices(self) ->list:
         return list(self.vertices.values())

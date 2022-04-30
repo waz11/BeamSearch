@@ -16,38 +16,43 @@ class GraphFromQuery(Graph):
         self.key += 1
         return self.key
 
-    def add_class(self, name: string) -> Vertex:
-        vertex = self.classes_names.get(name)
-        if vertex:
-            return vertex
-        else:
-            key = self.get_key()
-            vertex = Vertex(key, name, 'class')
-            super().add_vertex(vertex)
 
-            self.vertices[key] = vertex
-            self.classes_names[name] = vertex
-            return vertex
-
-    def add_edge(self, type: string, source_key: int, dest_key: int):
+    def add_edge(self, type: VertexTypeEnum, source_key: int, dest_key: int):
         edge = Edge(source_key, dest_key, type)
         super().add_edge(edge)
 
+    def add_vertex(self, name :string, type: VertexTypeEnum):
+        if(type == VertexTypeEnum.CLASS):
+            return self.add_class(name)
+        if(type==VertexTypeEnum.METHOD): return self.add_method(name)
+        if(type == VertexTypeEnum.INTERFACE): return self.add_interface(name)
 
-    def add_method(self, name, arguments=[], modifiers=[], return_type='') -> Vertex:
-        key = self.get_key()
-        vertex = Vertex(key, name, VertexTypeEnum.METHOD, arguments, modifiers)
-        self.vertices[key] = vertex
-        self.methods_names[name] = vertex
+    def add_class(self, name: string) -> Vertex:
+        vertex_key = self.classes_names.get(name)
+        if vertex_key != None:
+            return super().get_vertex(vertex_key)
+
+        vertex = Vertex(self.get_key(), name, VertexTypeEnum.CLASS)
+        super().add_vertex(vertex)
+        self.classes_names[name] = vertex.key
+        return vertex
+
+    def add_method(self, name) -> Vertex:
+        vertex_key = self.methods_names.get(name)
+        if vertex_key != None:
+            return super().get_vertex(vertex_key)
+
+        vertex = Vertex(self.get_key(), name, VertexTypeEnum.METHOD)
+        super().add_vertex(vertex)
+        self.methods_names[name] = vertex.key
         return vertex
 
     def add_interface(self, name: string) -> Vertex:
-        vertex = self.interfaces_names.get(name)
-        if vertex:
-            return vertex
-        else:
-            key = self.get_key()
-            vertex = Vertex(key, name, VertexTypeEnum.INTERFACE)
-            self.vertices[key] = vertex
-            self.interfaces_names[name] = vertex
-            return vertex
+        vertex_key = self.interfaces_names.get(name)
+        if vertex_key != None:
+            return super().get_vertex(vertex_key)
+
+        vertex = Vertex(self.get_key(), name, VertexTypeEnum.INTERFACE)
+        super().add_vertex(vertex)
+        self.interfaces_names[name] = vertex.key
+        return vertex
