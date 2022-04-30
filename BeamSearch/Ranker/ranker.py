@@ -1,8 +1,6 @@
 import string
-
 from Graph.vertex import Vertex
 from BeamSearch.Ranker.matrix import Matrix
-# from Searcher.Gready_Search.Ranker.sematch.semantic.similarity import WordNetSimilarity
 import snowballstemmer
 import BeamSearch.model.BOW as BOW
 from BeamSearch.model.WordEmbedding import WordEmbedding

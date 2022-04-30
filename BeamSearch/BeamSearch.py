@@ -1,7 +1,5 @@
-import string
 import copy
 from Graph.graph import Graph
-from Graph.vertex import Vertex
 from BeamSearch.group import Group
 from BeamSearch.model.WordEmbedding import WordEmbedding
 from Query.query import Query

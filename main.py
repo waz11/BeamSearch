@@ -6,17 +6,13 @@ from Query.query import Query
 def testBeamSearch():
     graph = GraphFromJson('./Files/graphs/src1.json')
 
-    # query = Query("list iterable node")
-    # searcher = BeamSearch(graph)
-    # result = searcher.search(query, 2)
-    #
-    # print(result)
-    # result.draw()
+    query = Query("list iterable node")
+    searcher = BeamSearch(graph)
+    result = searcher.search(query, 2)
 
-    # print(result.num_of_vertices())
-    # print(result.num_of_edges())
-    # searcher.model.db.print_table('src1')
-    # searcher.model.db.delete_db()
+    print(result)
+    result.draw()
+
 
 def main():
     testBeamSearch()
